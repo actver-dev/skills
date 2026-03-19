@@ -1,0 +1,46 @@
+FROM node:22-slim
+
+WORKDIR /workspace
+
+# Copy the plugin/skills repository
+COPY . /repo
+
+# Test: npx skills add from local path
+RUN mkdir -p /workspace/test-project/.github/workflows && \
+    cd /workspace/test-project && \
+    git init && \
+    git config user.email "test@test.com" && \
+    git config user.name "test"
+
+# Create a sample workflow file for skills to operate on
+RUN cat <<'WORKFLOW' > /workspace/test-project/.github/workflows/ci.yml
+name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+WORKFLOW
+
+# Test: skills add from local directory
+# Allow failure here — verify step below is the actual assertion
+RUN cd /workspace/test-project && \
+    npx -y skills add /repo 2>&1; \
+    echo "skills add exit code: $?"
+
+# Verify skills were installed
+RUN echo "=== Checking installed skills ===" && \
+    for skill in pin-actions upgrade-actions audit-actions; do \
+      if [ -f "/workspace/test-project/.agents/skills/$skill/SKILL.md" ]; then \
+        echo "✓ $skill installed"; \
+      else \
+        echo "✗ $skill NOT found" && exit 1; \
+      fi; \
+    done
+
+CMD ["echo", "All tests passed!"]

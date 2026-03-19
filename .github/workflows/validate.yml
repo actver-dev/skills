@@ -1,0 +1,68 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run validation
+        run: ./scripts/validate.sh
+
+  skills-install:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: skills-repo
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '22'
+
+      - name: Create test project
+        run: |
+          mkdir -p /tmp/test-project/.github/workflows
+          cd /tmp/test-project
+          git init
+          git config user.email "test@test.com"
+          git config user.name "test"
+          cat <<'EOF' > .github/workflows/ci.yml
+          name: CI
+          on: push
+          jobs:
+            build:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - run: echo "test"
+          EOF
+
+      - name: Test skills add
+        env:
+          SKILLS_REPO_PATH: skills-repo
+        run: |
+          cd /tmp/test-project
+          npx -y skills add "$GITHUB_WORKSPACE/$SKILLS_REPO_PATH"
+
+      - name: Verify installed skills
+        run: |
+          cd /tmp/test-project
+          for skill in pin-actions upgrade-actions audit-actions; do
+            if [ -f ".agents/skills/$skill/SKILL.md" ]; then
+              echo "✓ $skill installed"
+            else
+              echo "✗ $skill NOT found"
+              exit 1
+            fi
+          done
