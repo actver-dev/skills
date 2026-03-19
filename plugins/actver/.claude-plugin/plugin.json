@@ -1,0 +1,7 @@
+{
+  "name": "actver",
+  "description": "GitHub Actions version lookup and SHA pinning via ActVer MCP",
+  "author": {
+    "name": "yk-works"
+  }
+}

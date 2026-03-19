@@ -1,0 +1,6 @@
+{
+  "actver": {
+    "type": "http",
+    "url": "https://actver.dev/mcp"
+  }
+}

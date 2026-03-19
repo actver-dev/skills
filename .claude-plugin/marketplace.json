@@ -1,0 +1,26 @@
+{
+  "plugins": [
+    {
+      "name": "actver",
+      "path": "plugins/actver",
+      "description": "GitHub Actions version lookup and SHA pinning via ActVer MCP"
+    }
+  ],
+  "skills": [
+    {
+      "name": "pin-actions",
+      "path": "skills/pin-actions",
+      "description": "Pin GitHub Actions to full commit SHAs for supply-chain security"
+    },
+    {
+      "name": "upgrade-actions",
+      "path": "skills/upgrade-actions",
+      "description": "Upgrade GitHub Actions to their latest versions"
+    },
+    {
+      "name": "audit-actions",
+      "path": "skills/audit-actions",
+      "description": "Audit GitHub Actions workflows for security best practices"
+    }
+  ]
+}
