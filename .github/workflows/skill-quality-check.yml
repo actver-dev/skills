@@ -1,0 +1,88 @@
+name: Skill Quality Check (LLM)
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths:
+      - "skills/**/SKILL.md"
+      - "skills/**/references/**"
+      - "plugins/actver/agents/*.md"
+
+jobs:
+  skill-quality:
+    runs-on: ubuntu-latest
+    environment: llm-check
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Run Skill Quality Check
+        uses: anthropics/claude-code-action@df37d2f0760a4b5683a6e617c9325bc1a36443f6 # v1.0.75
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
+          plugins: 'skill-reviewer@claude-code-plugins'
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            You are a skill quality reviewer for Claude Code plugins.
+            Review the changed SKILL.md, references/, and agent .md files in this PR.
+
+            Use `gh pr diff ${{ github.event.pull_request.number }}` to get the actual changes.
+
+            ## Check criteria
+
+            ### SKILL.md frontmatter
+            1. **description format**: Must start with "This skill should be used when" (third person)
+            2. **Trigger phrases**: Should include 5+ diverse trigger phrases covering synonyms, related terms, and common user phrasings
+            3. **Trigger overlap**: Check if trigger phrases overlap significantly with other skills in the repo. Read all SKILL.md files to compare.
+
+            ### SKILL.md content
+            4. **Consistency**: Steps, instructions, and notes should be consistent with the description
+            5. **Completeness**: Should cover the main use case end-to-end
+            6. **Cross-skill handoff**: If the skill relates to other skills (e.g., audit -> pin -> upgrade), Notes section should mention when to hand off
+
+            ### Agent frontmatter
+            7. **description format**: Must start with "Use this agent when"
+            8. **Tool coverage**: Description should mention key capabilities/tools available
+
+            ### references/
+            9. **Relevance**: Reference content should support the skill's instructions
+            10. **Accuracy**: Technical content should be correct and up-to-date
+
+            ## Output format
+
+            Post a single PR comment using `gh pr comment` with this structure:
+
+            ```
+            ## Skill Quality Check
+
+            | # | Check | Status | Notes |
+            |---|-------|--------|-------|
+            | 1 | Description format | PASS/WARN/FAIL | ... |
+            | ... | ... | ... | ... |
+
+            ### Summary
+            - **PASS**: N checks
+            - **WARN**: N checks (suggestions for improvement)
+            - **FAIL**: N checks (must fix before merge)
+
+            ### Details
+            (Detailed feedback for WARN and FAIL items only)
+            ```
+
+            Only report issues for files that were actually changed in this PR.
+            Be constructive and specific in feedback.
+
+          claude_args: |
+            --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Glob,Grep"
+            --model "claude-sonnet-4-6"
