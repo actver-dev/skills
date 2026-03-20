@@ -122,11 +122,36 @@ plugins = d.get('plugins', [])
 assert isinstance(plugins, list) and len(plugins) > 0, 'empty'
 for p in plugins:
     assert 'name' in p, 'missing name'
+    assert 'description' in p, 'missing description'
     assert 'source' in p, 'missing source'
 " "$marketplace_json" 2>/dev/null; then
-    pass "marketplace.json 'plugins' array is valid"
+    pass "marketplace.json plugins have required fields (name, description, source)"
   else
-    fail "marketplace.json 'plugins' — missing or invalid"
+    fail "marketplace.json plugins — missing required fields"
+  fi
+
+  # Check for duplicate plugin names
+  if python3 -c "
+import json, sys
+d = json.load(open(sys.argv[1]))
+names = [p['name'] for p in d.get('plugins', [])]
+assert len(names) == len(set(names)), f'duplicate names: {[n for n in names if names.count(n) > 1]}'
+" "$marketplace_json" 2>/dev/null; then
+    pass "marketplace.json no duplicate plugin names"
+  else
+    fail "marketplace.json has duplicate plugin names"
+  fi
+
+  # Check plugins are sorted alphabetically
+  if python3 -c "
+import json, sys
+d = json.load(open(sys.argv[1]))
+names = [p['name'] for p in d.get('plugins', [])]
+assert names == sorted(names), f'plugins not sorted: {names}'
+" "$marketplace_json" 2>/dev/null; then
+    pass "marketplace.json plugins are sorted"
+  else
+    fail "marketplace.json plugins are not sorted alphabetically"
   fi
 fi
 
@@ -167,6 +192,44 @@ for line in fm.splitlines():
     pass "skills/$skill_name/SKILL.md — valid frontmatter"
   else
     fail "skills/$skill_name/SKILL.md — invalid or missing frontmatter"
+  fi
+done
+
+# ─────────────────────────────────────────────
+# 3b. Agent frontmatter validation
+# ─────────────────────────────────────────────
+echo ""
+echo "=== Agent frontmatter ==="
+
+for agent_md in "$REPO_ROOT"/plugins/*/agents/*.md; do
+  if [[ ! -f "$agent_md" ]]; then
+    continue
+  fi
+
+  plugin_name="$(basename "$(dirname "$(dirname "$agent_md")")")"
+  agent_name="$(basename "$agent_md" .md)"
+
+  if python3 -c "
+import sys, re
+
+content = open(sys.argv[1]).read()
+match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+assert match, 'no frontmatter'
+
+fm = match.group(1)
+assert 'name:' in fm, 'missing name'
+assert 'description:' in fm, 'missing description'
+
+# Check description is not empty
+for line in fm.splitlines():
+    if line.startswith('description:'):
+        desc = line.split(':', 1)[1].strip()
+        assert len(desc) > 20, 'description too short'
+        break
+" "$agent_md" 2>/dev/null; then
+    pass "plugins/$plugin_name/agents/$agent_name.md — valid frontmatter"
+  else
+    fail "plugins/$plugin_name/agents/$agent_name.md — invalid or missing frontmatter"
   fi
 done
 
