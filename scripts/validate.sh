@@ -24,7 +24,6 @@ required_files=(
   "README.md"
   "CLAUDE.md"
   ".gitignore"
-  ".github/FUNDING.yml"
   ".claude-plugin/marketplace.json"
   "plugins/actver/.claude-plugin/plugin.json"
   "plugins/actver/.mcp.json"
