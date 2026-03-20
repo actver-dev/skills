@@ -31,8 +31,7 @@ WORKFLOW
 
 # Test: skills add from local directory (--yes skips interactive prompts)
 RUN cd /workspace/test-project && \
-    npx -y skills add /repo --yes 2>&1; \
-    echo "skills add exit code: $?"
+    npx -y skills add /repo --yes
 
 # Verify installed files match expected manifest
 RUN echo "=== Checking installed skills ===" && \

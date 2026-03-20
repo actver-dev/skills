@@ -221,7 +221,7 @@ for line in open(sys.argv[1]):
     if [[ -f "$target" ]]; then
       pass "agents/$agent_name: $link"
     else
-      warn "agents/$agent_name: $link — link not found (may be intentional)"
+      fail "agents/$agent_name: $link — broken link"
     fi
   done
 done
@@ -265,9 +265,7 @@ if [[ -f "$manifest_file" ]]; then
     diff <(echo "$expected_files") <(echo "$actual_files") || true
   fi
 else
-  warn "No expected-files.txt found — generating it"
-  echo "$actual_files" > "$manifest_file"
-  pass "Generated $manifest_file"
+  fail "scripts/expected-files.txt not found — run './scripts/validate.sh' locally to generate it, then commit"
 fi
 
 # ─────────────────────────────────────────────
