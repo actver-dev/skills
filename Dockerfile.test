@@ -1,5 +1,7 @@
 FROM node:22-slim
 
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /workspace
 
 # Copy the plugin/skills repository
@@ -27,20 +29,23 @@ jobs:
       - run: npm test
 WORKFLOW
 
-# Test: skills add from local directory
-# Allow failure here — verify step below is the actual assertion
+# Test: skills add from local directory (--yes skips interactive prompts)
 RUN cd /workspace/test-project && \
-    npx -y skills add /repo 2>&1; \
+    npx -y skills add /repo --yes 2>&1; \
     echo "skills add exit code: $?"
 
-# Verify skills were installed
+# Verify installed files match expected manifest
 RUN echo "=== Checking installed skills ===" && \
-    for skill in pin-actions upgrade-actions audit-actions; do \
-      if [ -f "/workspace/test-project/.agents/skills/$skill/SKILL.md" ]; then \
-        echo "✓ $skill installed"; \
-      else \
-        echo "✗ $skill NOT found" && exit 1; \
-      fi; \
-    done
+    cd /workspace/test-project && \
+    actual=$(find .agents/skills -type f | sed 's|^\.agents/skills/||' | sort) && \
+    expected=$(sed 's|^skills/||' /repo/scripts/expected-files.txt | sort) && \
+    if [ "$actual" = "$expected" ]; then \
+      echo "✓ Installed files match expected manifest"; \
+    else \
+      echo "✗ File mismatch"; \
+      echo "--- expected ---"; echo "$expected"; \
+      echo "--- actual ---"; echo "$actual"; \
+      exit 1; \
+    fi
 
 CMD ["echo", "All tests passed!"]

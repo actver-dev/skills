@@ -103,21 +103,31 @@ echo ""
 echo "=== marketplace.json schema ==="
 marketplace_json="$REPO_ROOT/.claude-plugin/marketplace.json"
 if [[ -f "$marketplace_json" ]]; then
-  for array in plugins skills; do
-    if python3 -c "
+  if python3 -c "
 import json, sys
 d = json.load(open(sys.argv[1]))
-items = d.get('$array', [])
-assert isinstance(items, list) and len(items) > 0, 'empty'
-for item in items:
-    assert 'name' in item, 'missing name'
-    assert 'path' in item, 'missing path'
+assert isinstance(d.get('name'), str) and len(d['name']) > 0, 'missing name'
+assert isinstance(d.get('owner'), dict), 'missing owner'
+assert isinstance(d['owner'].get('name'), str), 'missing owner.name'
 " "$marketplace_json" 2>/dev/null; then
-      pass "marketplace.json '$array' array is valid"
-    else
-      fail "marketplace.json '$array' — missing or invalid"
-    fi
-  done
+    pass "marketplace.json has valid name and owner"
+  else
+    fail "marketplace.json — missing name or owner"
+  fi
+
+  if python3 -c "
+import json, sys
+d = json.load(open(sys.argv[1]))
+plugins = d.get('plugins', [])
+assert isinstance(plugins, list) and len(plugins) > 0, 'empty'
+for p in plugins:
+    assert 'name' in p, 'missing name'
+    assert 'source' in p, 'missing source'
+" "$marketplace_json" 2>/dev/null; then
+    pass "marketplace.json 'plugins' array is valid"
+  else
+    fail "marketplace.json 'plugins' — missing or invalid"
+  fi
 fi
 
 # ─────────────────────────────────────────────
@@ -216,24 +226,48 @@ for line in open(sys.argv[1]):
   done
 done
 
-# Check marketplace.json paths exist
+# Check marketplace.json plugin source paths exist
 echo ""
-echo "=== Marketplace path validation ==="
+echo "=== Marketplace source validation ==="
 if [[ -f "$marketplace_json" ]]; then
   paths=$(python3 -c "
 import json, sys
 d = json.load(open(sys.argv[1]))
-for section in ['plugins', 'skills']:
-    for item in d.get(section, []):
-        print(item['path'])
+for p in d.get('plugins', []):
+    src = p.get('source', '')
+    if isinstance(src, str) and src.startswith('./'):
+        print(src.lstrip('./'))
 " "$marketplace_json" 2>/dev/null || true)
   for p in $paths; do
     if [[ -d "$REPO_ROOT/$p" ]]; then
-      pass "marketplace path: $p"
+      pass "marketplace source: $p"
     else
-      fail "marketplace path: $p — directory not found"
+      fail "marketplace source: $p — directory not found"
     fi
   done
+fi
+
+# ─────────────────────────────────────────────
+# 5. Skills file manifest (for install verification)
+# ─────────────────────────────────────────────
+echo ""
+echo "=== Skills file manifest ==="
+
+manifest_file="$REPO_ROOT/scripts/expected-files.txt"
+actual_files=$(cd "$REPO_ROOT" && find skills -type f | sort)
+
+if [[ -f "$manifest_file" ]]; then
+  expected_files=$(sort "$manifest_file")
+  if [[ "$actual_files" == "$expected_files" ]]; then
+    pass "Skills files match expected manifest"
+  else
+    fail "Skills files do not match expected manifest"
+    diff <(echo "$expected_files") <(echo "$actual_files") || true
+  fi
+else
+  warn "No expected-files.txt found — generating it"
+  echo "$actual_files" > "$manifest_file"
+  pass "Generated $manifest_file"
 fi
 
 # ─────────────────────────────────────────────

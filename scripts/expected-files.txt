@@ -1,0 +1,6 @@
+skills/audit-actions/references/security-checklist.md
+skills/audit-actions/SKILL.md
+skills/pin-actions/references/sha-pinning-guide.md
+skills/pin-actions/SKILL.md
+skills/upgrade-actions/references/upgrade-patterns.md
+skills/upgrade-actions/SKILL.md
