@@ -15,7 +15,8 @@ Works with **Claude Code**, **Cursor**, **Copilot**, and [20+ other agents via s
 ### A) Claude Code Plugin (recommended)
 
 ```bash
-claude plugin install actver-dev/skills
+claude plugin marketplace add actver-dev/skills
+claude plugin install actver
 ```
 
 Includes MCP server, agent, and all skills.

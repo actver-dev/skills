@@ -15,7 +15,8 @@
 ### A) Claude Code プラグイン（推奨）
 
 ```bash
-claude plugin install actver-dev/skills
+claude plugin marketplace add actver-dev/skills
+claude plugin install actver
 ```
 
 MCP サーバー、エージェント、全スキルが含まれます。
