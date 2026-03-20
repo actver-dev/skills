@@ -1,0 +1,32 @@
+version: '3'
+
+vars:
+  DOCKER_IMAGE: actver-skills-test
+
+tasks:
+  validate:
+    desc: Validate plugin structure, JSON, frontmatter, and links
+    cmds:
+      - ./scripts/validate.sh
+
+  docker:build:
+    desc: Build Docker test image
+    cmds:
+      - docker build -f Dockerfile.test -t {{.DOCKER_IMAGE}} .
+
+  docker:test:
+    desc: Build and run Docker test (npx skills add)
+    deps: [docker:build]
+    cmds:
+      - docker run --rm {{.DOCKER_IMAGE}}
+
+  test:
+    desc: Run all tests (validate + docker)
+    cmds:
+      - task: validate
+      - task: docker:test
+
+  clean:
+    desc: Remove Docker test image
+    cmds:
+      - docker rmi {{.DOCKER_IMAGE}} 2>/dev/null || true

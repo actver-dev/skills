@@ -1,0 +1,50 @@
+FROM node:22-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Copy the plugin/skills repository
+COPY . /repo
+
+# Test: npx skills add from local path
+RUN mkdir -p /workspace/test-project/.github/workflows && \
+    cd /workspace/test-project && \
+    git init && \
+    git config user.email "test@test.com" && \
+    git config user.name "test"
+
+# Create a sample workflow file for skills to operate on
+RUN cat <<'WORKFLOW' > /workspace/test-project/.github/workflows/ci.yml
+name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+WORKFLOW
+
+# Test: skills add from local directory (--yes skips interactive prompts)
+RUN cd /workspace/test-project && \
+    npx -y skills add /repo --yes
+
+# Verify installed files match expected manifest
+RUN echo "=== Checking installed skills ===" && \
+    cd /workspace/test-project && \
+    actual=$(find .agents/skills -type f | sed 's|^\.agents/skills/||' | sort) && \
+    expected=$(sed 's|^skills/||' /repo/scripts/expected-files.txt | sort) && \
+    if [ "$actual" = "$expected" ]; then \
+      echo "✓ Installed files match expected manifest"; \
+    else \
+      echo "✗ File mismatch"; \
+      echo "--- expected ---"; echo "$expected"; \
+      echo "--- actual ---"; echo "$actual"; \
+      exit 1; \
+    fi
+
+CMD ["echo", "All tests passed!"]
