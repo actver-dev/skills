@@ -88,13 +88,44 @@ jobs: ...
 - uses: docker://node@sha256:abc123...
 ```
 
+### 7. Checkout Credential Persistence
+**Risk**: Token persisted in `.git/config` can be stolen by compromised dependencies or scripts in later steps
+**Check**: `actions/checkout` without `persist-credentials: false`
+```yaml
+# Bad — token remains in .git/config for subsequent steps
+- uses: actions/checkout@v4
+
+# Good — credentials removed after checkout
+- uses: actions/checkout@v4
+  with:
+    persist-credentials: false
+```
+
+**Exception**: Workflows that need `git push` (deploy, release, backport) may require persisted credentials. In such cases, minimize the window by running the push step immediately after checkout and before installing dependencies.
+
+### 8. Submodules with Persisted Credentials
+**Risk**: Submodule init scripts can access the persisted token; especially dangerous with custom PATs that have broad scope
+**Check**: `submodules: true` (or `recursive`) without `persist-credentials: false`
+```yaml
+# Bad — token accessible to submodule scripts
+- uses: actions/checkout@v4
+  with:
+    submodules: true
+
+# Good — no persisted credentials
+- uses: actions/checkout@v4
+  with:
+    submodules: true
+    persist-credentials: false
+```
+
 ## Info Issues
 
-### 7. Outdated Actions
+### 9. Outdated Actions
 **Check**: Actions not on their latest stable version
 **Fix**: Use ActVer to look up latest versions and upgrade
 
-### 8. No Timeout
+### 10. No Timeout
 **Check**: Jobs without `timeout-minutes`
 **Risk**: Runaway jobs consuming CI minutes
 ```yaml
@@ -104,7 +135,7 @@ jobs:
     steps: ...
 ```
 
-### 9. Concurrency Not Set
+### 11. Concurrency Not Set
 **Check**: Workflows without `concurrency` for deploy workflows
 **Risk**: Concurrent deploys causing issues
 ```yaml
