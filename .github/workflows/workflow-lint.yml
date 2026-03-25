@@ -6,18 +6,25 @@ on:
     paths:
       - ".github/workflows/**"
       - ".ghalint.yml"
+      - ".zizmor.yml"
   pull_request:
     branches: [main]
     paths:
       - ".github/workflows/**"
       - ".ghalint.yml"
+      - ".zizmor.yml"
 
-permissions:
-  contents: read
+concurrency:
+  group: workflow-lint-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   actionlint:
+    name: actionlint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # Read workflow files for linting
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -26,7 +33,11 @@ jobs:
       - uses: rhysd/actionlint@393031adb9afb225ee52ae2ccd7a5af5525e03e8 # v1.7.11
 
   ghalint:
+    name: ghalint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # Read workflow files for linting
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -43,7 +54,11 @@ jobs:
         run: ghalint run
 
   zizmor:
+    name: zizmor
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # Read workflow files for auditing
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:

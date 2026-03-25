@@ -8,13 +8,19 @@ on:
       - "skills/**/references/**"
       - "plugins/actver/agents/*.md"
 
+concurrency:
+  group: skill-quality-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   skill-quality:
+    name: Skill Quality Check
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
-      contents: read
-      pull-requests: write
-      id-token: write
+      contents: read        # Read repository contents
+      pull-requests: write  # Post review comments
+      id-token: write       # OIDC authentication for Claude Code Action
 
     steps:
       - name: Checkout
