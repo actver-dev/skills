@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [main]
 
+permissions: {} # deny by default — each job declares its own
+
 concurrency:
   group: validate-${{ github.ref }}
   cancel-in-progress: true

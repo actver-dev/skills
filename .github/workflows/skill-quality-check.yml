@@ -8,6 +8,8 @@ on:
       - "skills/**/references/**"
       - "plugins/actver/agents/*.md"
 
+permissions: {} # deny by default — each job declares its own
+
 concurrency:
   group: skill-quality-${{ github.event.pull_request.number }}
   cancel-in-progress: true
