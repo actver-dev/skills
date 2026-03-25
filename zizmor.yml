@@ -1,0 +1,13 @@
+# Claude Code Action requires secrets directly (not via GitHub Environment)
+# and id-token: write for OIDC authentication.
+rules:
+  secrets-outside-env:
+    ignore:
+      - claude.yml
+      - claude-code-review.yml
+      - skill-quality-check.yml
+  excessive-permissions:
+    ignore:
+      - claude.yml
+      - claude-code-review.yml
+      - skill-quality-check.yml

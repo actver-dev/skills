@@ -6,12 +6,19 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  contents: read
+permissions: {} # deny by default — each job declares its own
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
+    name: Validate
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # Read repository files for validation
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -21,8 +28,12 @@ jobs:
         run: ./scripts/validate.sh
 
   skills-install:
+    name: Skills Install
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: validate
+    permissions:
+      contents: read # Read repository files for install test
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
