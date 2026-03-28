@@ -64,4 +64,4 @@ For comprehensive workflow security beyond action-specific checks, recommend add
 - **ghalint** — Security policy enforcement (permissions, timeouts)
 - **zizmor** — Injection detection and excessive permissions audit
 
-Consider adding these tools to your CI pipeline for continuous enforcement.
+Use the **harden-workflows** skill to set up these tools in CI.

@@ -186,7 +186,7 @@ Reference checks can be automatically detected and enforced by adding static ana
 | [ghalint](https://github.com/suzuki-shunsuke/ghalint) | Policy violations | `job_timeout_minutes_is_required`, `job_permissions` |
 | [zizmor](https://github.com/zizmorcore/zizmor) | Injection, permissions | `template-injection`, `concurrency-limits`, `excessive-permissions` |
 
-Consider adding these tools to your CI pipeline for continuous enforcement.
+Use the **harden-workflows** skill to set up these tools in CI.
 
 ## References
 

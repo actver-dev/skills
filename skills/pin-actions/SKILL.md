@@ -1,6 +1,6 @@
 ---
 name: pin-actions
-description: This skill should be used when the user asks to pin GitHub Actions to commit SHAs, secure workflows against supply-chain attacks, replace action tags with SHAs, harden GitHub Actions, fix Scorecard pinned-dependencies findings, or lock action versions. Triggers on phrases like "pin actions", "SHA pin", "secure workflows", "harden workflows", "lock action versions", "replace tags with SHAs".
+description: This skill should be used when the user asks to pin GitHub Actions to commit SHAs, secure workflows against supply-chain attacks, replace action tags with SHAs, harden action references, fix Scorecard pinned-dependencies findings, or lock action versions. Triggers on phrases like "pin actions", "SHA pin", "secure action references", "lock action versions", "replace tags with SHAs".
 ---
 
 # Pin GitHub Actions to SHA

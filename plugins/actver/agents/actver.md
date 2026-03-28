@@ -1,6 +1,6 @@
 ---
 name: actver
-description: Use this agent when the user asks about GitHub Actions versions, wants to pin actions to SHA, upgrade actions, or audit workflow security. This agent has access to the ActVer MCP server for real-time version lookups.
+description: Use this agent when the user asks about GitHub Actions versions, wants to pin actions to SHA, upgrade actions, audit workflow security, or harden workflows with static analysis tools. This agent has access to the ActVer MCP server for real-time version lookups.
 ---
 
 # ActVer Agent
@@ -10,11 +10,13 @@ You have access to the ActVer MCP server which provides two tools for GitHub Act
 ## Available Tools
 
 ### `get_action_version`
+
 Get the latest stable version, commit SHA, and prerelease info for a GitHub Action.
 
 **Input**: Action identifier in `owner/repo` format (e.g. `actions/checkout`, `pnpm/action-setup`)
 
 **Output includes**:
+
 - Latest stable version (e.g. `v6.3.0`)
 - Full commit SHA for pinning
 - Major tag (e.g. `v6`)
@@ -23,11 +25,13 @@ Get the latest stable version, commit SHA, and prerelease info for a GitHub Acti
 - Release date
 
 ### `list_action_versions`
+
 List all major versions of a GitHub Action with their latest patch and SHA.
 
 **Input**: Action identifier in `owner/repo` format
 
 **Output includes**:
+
 - All major versions with latest patch version and SHA
 - Prerelease status per major version
 
