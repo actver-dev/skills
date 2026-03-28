@@ -24,7 +24,7 @@ This skill helps **set up tooling** for continuous workflow security enforcement
    - Look up the latest SHA-pinned versions of `actions/checkout`, `rhysd/actionlint`, and `zizmorcore/zizmor-action` using ActVer (prefer `get_action_version` MCP tool)
    - Look up the latest ghalint release version from GitHub (`gh release view --repo suzuki-shunsuke/ghalint --json tagName`)
    - Generate the workflow with all actions SHA-pinned and ghalint version-pinned
-3. Create a `zizmor.yml` config file if zizmor reports `secrets-outside-env` or `excessive-permissions` findings that are intentional:
+3. After the workflow runs for the first time, create a `zizmor.yml` config file if zizmor reports `secrets-outside-env` or `excessive-permissions` findings that are intentional false positives:
    - Add ignores for workflows that pass secrets to trusted actions (e.g. claude-code-action, deploy actions)
 4. Apply workflow security best practices to existing workflows where missing (confirm with the user before modifying workflows beyond the lint file):
    - `permissions: {}` at workflow level (deny by default) + job-level permissions
