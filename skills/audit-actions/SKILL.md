@@ -55,13 +55,5 @@ General workflow security items (script injection, timeouts, concurrency) are in
 - This skill identifies and reports issues — it does not fix them automatically
 - To remediate unpinned actions, use the **pin-actions** skill
 - To upgrade outdated actions, use the **upgrade-actions** skill
+- To set up continuous enforcement with actionlint, ghalint, and zizmor, use the **harden-workflows** skill
 - For the full security checklist, see [references/security-checklist.md](references/security-checklist.md)
-
-### Workflow-wide security tooling
-
-For comprehensive workflow security beyond action-specific checks, recommend adding static analysis tools to CI:
-- **actionlint** — Workflow syntax validation and shellcheck integration
-- **ghalint** — Security policy enforcement (permissions, timeouts)
-- **zizmor** — Injection detection and excessive permissions audit
-
-Use the **harden-workflows** skill to set up these tools in CI.

@@ -36,4 +36,6 @@ Pin all GitHub Actions in workflow files to full commit SHAs for supply-chain se
 - Always preserve the version as a `# vX.Y.Z` comment after the SHA
 - Skip local actions (`uses: ./.github/actions/...` or `uses: ./`) — these are in the user's own repo
 - Skip Docker-based actions (`docker://`) — use image digests instead
+- To audit workflow security and verify pinning coverage, use the **audit-actions** skill
+- To enforce pinning automatically in CI, use the **harden-workflows** skill
 - For details, see [references/sha-pinning-guide.md](references/sha-pinning-guide.md)
