@@ -183,7 +183,7 @@ Reference checks can be automatically detected and enforced by adding static ana
 | Tool | Detects | Key rules |
 |------|---------|-----------|
 | [actionlint](https://github.com/rhysd/actionlint) | Syntax errors, type mismatches | shellcheck integration |
-| [ghalint](https://github.com/suzuki-shunsuke/ghalint) | Policy violations | `job_timeout_minutes_is_required`, `job_permissions`, `action_ref_should_be_full_length_commit_sha` |
+| [ghalint](https://github.com/suzuki-shunsuke/ghalint) | Policy violations | `job_timeout_minutes_is_required`, `job_permissions` |
 | [zizmor](https://github.com/zizmorcore/zizmor) | Injection, permissions | `template-injection`, `concurrency-limits`, `excessive-permissions` |
 
 Consider adding these tools to your CI pipeline for continuous enforcement.

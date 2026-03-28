@@ -7,6 +7,17 @@ description: This skill should be used when a user asks to audit GitHub Actions 
 
 Perform a security audit of GitHub Actions workflow files, checking for common security issues and best practices.
 
+## Scope
+
+This skill focuses on **Action-related security** (Core checks):
+- Action ref format (SHA pinning, tag references, Docker tags)
+- `actions/checkout` configuration (persist-credentials, submodules)
+- Dangerous trigger patterns involving checkout (`pull_request_target`)
+- Secrets passed to actions
+- Permissions affecting action execution
+
+General workflow security items (script injection, timeouts, concurrency) are included as **Reference checks** for awareness, but can be automatically detected and enforced by dedicated linting tools.
+
 ## Steps
 
 1. Find all workflow files in `.github/workflows/`
@@ -29,10 +40,10 @@ Perform a security audit of GitHub Actions workflow files, checking for common s
 ### Critical
 - [ ] `deploy.yml:15` — `actions/checkout@v4` is not SHA-pinned
 - [ ] `ci.yml:32` — Script injection via `${{ github.event.issue.title }}`
+- [ ] `release.yml:8` — `pull_request_target` with checkout of PR code
 
 ### Warning
 - [ ] `ci.yml:1` — No `permissions` key (defaults to broad access)
-- [ ] `release.yml:8` — Uses `pull_request_target` trigger
 - [ ] `ci.yml:5` — `actions/checkout` without `persist-credentials: false`
 
 ### Info
@@ -45,17 +56,6 @@ Perform a security audit of GitHub Actions workflow files, checking for common s
 - To remediate unpinned actions, use the **pin-actions** skill
 - To upgrade outdated actions, use the **upgrade-actions** skill
 - For the full security checklist, see [references/security-checklist.md](references/security-checklist.md)
-
-### Scope
-
-This skill focuses on **Action-related security** (Core checks):
-- Action ref format (SHA pinning, tag references, Docker tags)
-- `actions/checkout` configuration (persist-credentials, submodules)
-- Dangerous trigger patterns involving checkout (`pull_request_target`)
-- Secrets passed to actions
-- Permissions affecting action execution
-
-General workflow security items (script injection, timeouts, concurrency) are included as **Reference checks** for awareness, but can be automatically detected and enforced by dedicated linting tools.
 
 ### Workflow-wide security tooling
 
