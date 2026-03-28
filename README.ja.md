@@ -6,7 +6,7 @@
 [![ActVer](https://img.shields.io/badge/ActVer-actver.dev-blue)](https://actver.dev)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-orange?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/yetanother_yk)
 
-[ActVer](https://actver.dev) の AI コーディングエージェント向けプラグイン＆スキル — GitHub Actions のバージョン取得、SHA ピン留め、ワークフローセキュリティ監査。
+[ActVer](https://actver.dev) の AI コーディングエージェント向けプラグイン＆スキル — GitHub Actions のバージョン取得、SHA ピン留め、ワークフローセキュリティ監査、CI ハードニング。
 
 **Claude Code**、**Cursor**、**Copilot** など、[skills.sh 経由で 20 以上のエージェント](https://skills.sh)に対応。
 
@@ -53,6 +53,7 @@ Claude Code、Cursor、Copilot など対応エージェントで利用可能。
 | **pin-actions** | Actions を SHA にピン留め | 「ワークフローの Actions を SHA ピン留めして」 |
 | **upgrade-actions** | 最新版にアップグレード | 「GitHub Actions を更新して」 |
 | **audit-actions** | セキュリティ監査 | 「CI ワークフローを監査して」 |
+| **harden-workflows** | ワークフロー lint CI のセットアップ | 「actionlint/ghalint/zizmor を CI に追加して」 |
 
 ## MCP ツール
 

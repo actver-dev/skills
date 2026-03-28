@@ -19,7 +19,7 @@ GitHub Actions の最新バージョン・SHA 情報の取得、SHA ピン留め
   - `agents/actver.md` — エージェント定義
   - `skills/` → `../../skills/` へのシンボリックリンク
 - `skills/` — スキル定義（skills.sh 互換、マルチエージェント対応）
-  - `pin-actions/`, `upgrade-actions/`, `audit-actions/`
+  - `pin-actions/`, `upgrade-actions/`, `audit-actions/`, `harden-workflows/`
   - 各スキル: `SKILL.md` + `references/`
 - `.claude-plugin/marketplace.json` — Claude Code マーケットプレイス登録
 - `scripts/validate.sh` — 構造・JSON・frontmatter・リンク・マニフェスト検証
@@ -55,7 +55,7 @@ GitHub Actions の最新バージョン・SHA 情報の取得、SHA ピン留め
 ## Key Patterns
 
 - SKILL.md の description は三人称（"This skill should be used when..."）でトリガーフレーズを豊富に
-- スキル間の cross-skill ハンドオフを Notes に明記（audit → pin/upgrade）
+- スキル間の cross-skill ハンドオフを Notes に明記（audit → pin/upgrade/harden, harden → audit/pin/upgrade）
 - MCP ツールを優先、REST API はフォールバック
 
 ## Review Guidelines

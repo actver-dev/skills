@@ -6,7 +6,7 @@
 [![ActVer](https://img.shields.io/badge/ActVer-actver.dev-blue)](https://actver.dev)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-orange?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/yetanother_yk)
 
-[ActVer](https://actver.dev) plugin & skills for AI coding agents — GitHub Actions version lookup, SHA pinning, and workflow security auditing.
+[ActVer](https://actver.dev) plugin & skills for AI coding agents — GitHub Actions version lookup, SHA pinning, workflow security auditing, and CI hardening.
 
 Works with **Claude Code**, **Cursor**, **Copilot**, and [20+ other agents via skills.sh](https://skills.sh).
 
@@ -53,6 +53,7 @@ No local process or API key required.
 | **pin-actions** | Pin actions to SHA | "Pin my workflow actions to SHA" |
 | **upgrade-actions** | Upgrade to latest | "Update my GitHub Actions" |
 | **audit-actions** | Security audit | "Audit my CI workflows" |
+| **harden-workflows** | Set up workflow linting CI | "Add actionlint/ghalint/zizmor to CI" |
 
 ## MCP Tools
 
