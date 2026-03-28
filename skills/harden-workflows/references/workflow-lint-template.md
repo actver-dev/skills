@@ -83,7 +83,7 @@ jobs:
 
       - uses: zizmorcore/zizmor-action@SHA # vX.Y.Z — look up with ActVer
         with:
-          persona: auditor         # strictest; use 'pedantic' for moderate, 'regular' for minimal
+          persona: auditor         # balances signal-to-noise; use 'pedantic' for maximum coverage, 'regular' for minimal
           advanced-security: false # set true only if GitHub Advanced Security is enabled on the repo
 ```
 
