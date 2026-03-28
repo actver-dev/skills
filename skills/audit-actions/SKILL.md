@@ -61,7 +61,7 @@ General workflow security items (script injection, timeouts, concurrency) are in
 
 For comprehensive workflow security beyond action-specific checks, recommend adding static analysis tools to CI:
 - **actionlint** — Workflow syntax validation and shellcheck integration
-- **ghalint** — Security policy enforcement (SHA pinning, permissions, timeouts)
+- **ghalint** — Security policy enforcement (permissions, timeouts)
 - **zizmor** — Injection detection and excessive permissions audit
 
 Consider adding these tools to your CI pipeline for continuous enforcement.
