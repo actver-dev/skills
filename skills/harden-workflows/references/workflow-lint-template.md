@@ -46,7 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read # Read workflow files for linting
+      contents: read      # Download release artifact from GitHub
+      attestations: read  # Verify SLSA build provenance via gh attestation verify
     steps:
       - uses: actions/checkout@SHA # vX.Y.Z
         with:
@@ -82,8 +83,8 @@ jobs:
 
       - uses: zizmorcore/zizmor-action@SHA # vX.Y.Z — look up with ActVer
         with:
-          persona: auditor
-          advanced-security: false
+          persona: auditor         # strictest; use 'pedantic' for moderate, 'regular' for minimal
+          advanced-security: false # set true only if GitHub Advanced Security is enabled on the repo
 ```
 
 **Important**: Replace all `@SHA # vX.Y.Z` placeholders with actual SHA-pinned versions. Use the ActVer `get_action_version` tool to look up the latest versions.
